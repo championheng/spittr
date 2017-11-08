@@ -22,8 +22,9 @@ public class JdbcSpittleRepository implements SpittleRepository {
     private final static String INSERT_SPITTLE = "INSERT INTO spittle (message, created_at, " +
             "latitude, longitude) VALUES (?, ?, ?, ?)";
     //查询小于指定数字的id，并按照创建时间降序排序并且选取前20的结果
-    private final static String QUERY_SPITTLE = "SELECT id, message, created_at, latitude, " +
-            "longitude FROM spittle WHERE id < ? ORDER BY created_at DESC LIMIT 20";
+    private final static String QUERY_SPITTLE = "SELECT * FROM spittle WHERE id < ? " +
+            "ORDER BY created_at DESC LIMIT 20";
+    private final static String QUERY_SPITTLE_BYID = "SELECT * FROM spittle WHERE id = ?";
 
     @Inject
     public JdbcSpittleRepository(JdbcOperations jdbcOperations) {
@@ -42,6 +43,11 @@ public class JdbcSpittleRepository implements SpittleRepository {
     public void addSpittle(Spittle spittle) {
         jdbcOperations.update(INSERT_SPITTLE, spittle.getMessage(), spittle.getTime(),
                 spittle.getLatitude(), spittle.getLongitude());
+    }
+
+    public List<Spittle> findOne(long spittleId) {
+        return  jdbcOperations.query(QUERY_SPITTLE_BYID, new SpittleRowMapper(),
+                spittleId);
     }
 
     private final static class SpittleRowMapper implements RowMapper<Spittle> {

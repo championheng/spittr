@@ -1,6 +1,6 @@
 package spittr.DAOImpl;
 
-import spittr.model.Spittle;
+import spittr.model.Spitter;
 
 import java.util.List;
 
@@ -8,6 +8,6 @@ import java.util.List;
  * Created by hg_yi on 17-11-7.
  */
 public interface SpitterRepository {
-    List<Spittle> findSpittles(long max, int count);
-    void addSpittle(Spittle spittle);
+    Spitter save(Spitter spitter);
+    List<Spitter> findByUsername(String username);
 }
