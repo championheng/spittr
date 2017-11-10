@@ -4,13 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import spittr.DAOImpl.SpitterRepository;
 import spittr.model.Spitter;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -27,17 +28,25 @@ public class SpitterController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public String showRegistrationForm() {
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("spitter", new Spitter());
         return "registerForm";
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     //校验表单输入
-    public String processRegistration(@Valid Spitter spitter, Errors errors) {
+    public String processRegistration(@Valid @ModelAttribute("spitter") Spitter spitter, Errors errors) {
         if (errors.hasErrors()) {
             return "registerForm";
         }
 
+        MultipartFile profilePicturee = spitter.getProfilePicture();
+        try {
+            profilePicturee.transferTo(new File("/tmp/uploads/"
+                    + profilePicturee.getOriginalFilename()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         spitterRepository.save(spitter);
 
         return "redirect:/spitter/" + spitter.getUsername();

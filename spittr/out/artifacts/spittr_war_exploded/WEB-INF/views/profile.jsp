@@ -16,7 +16,7 @@
 <c:forEach items="${spitterList}" var="spitter" >
     <c:out value="${spitter.username}" /><br />
     <c:out value="${spitter.firstName}" />
-    <c:out value="${spitter.lastName}" />
+    <c:out value="${spitter.lastName}" /><br />
 </c:forEach>
 </body>
 </html>
